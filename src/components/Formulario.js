@@ -39,7 +39,7 @@ const Formulario = ({crearCita}) => {
 
         // Asignar un ID
         cita.id = uuid();
-        console.log(cita);
+        // console.log(cita);
 
         // Crear la cita
         crearCita(cita);
