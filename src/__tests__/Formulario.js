@@ -1,7 +1,8 @@
 import React from 'react';
-import {fireEvent, render, screen} from '@testing-library/react'
+import {fireEvent, getByTestId, render, screen} from '@testing-library/react'
 import Formulario from '../components/Formulario'
 import '@testing-library/jest-dom/extend-expect'
+import userEvent from '@testing-library/user-event';
 
 const crearCita = jest.fn();
 
@@ -34,7 +35,7 @@ test("<Formulario/> Carga del formulario y revisando funcionamiento", () => {
 });
 
 
-test('<Formulario/> Validación del formulario', ()=>{
+test('<Formulario/> Validación del formulario con formulario Vacio', ()=>{
 
     render(<Formulario crearCita={crearCita} />);
 
@@ -48,6 +49,40 @@ test('<Formulario/> Validación del formulario', ()=>{
     expect(alerta.textContent).toBe('Todos los campos son obligatorios'); 
     expect(alerta.tagName).toBe('P'); 
     
-
-
 })
+
+test('<Formulario /> Validación del formulario con datos', ()=>{
+    render(<Formulario crearCita={crearCita} />);
+
+    // // esta es la forma en la que antes se podia escribir en los formularios
+    // // simulacion de carga de un formulario
+    // fireEvent.change(screen.getByTestId('mascota'),{
+    //     target: {value: 'nombre de la mascota'}
+    // })
+    // fireEvent.change(screen.getByTestId('propietario'),{
+    //     target: {value: 'nombre del propietario'}
+    // })
+
+    userEvent.type(screen.getByTestId('mascota'), 'Nombre de la mascota');
+    userEvent.type(screen.getByTestId('propietario'), 'Nombre del Propietario');
+    userEvent.type(screen.getByTestId('fecha'), '2024-01-01');
+    userEvent.type(screen.getByTestId('hora'), '12:12');
+    userEvent.type(screen.getByTestId('sintomas'), 'Sintomas de la mascota');
+
+    // simulacion de un click en el formulario
+    const buttonSubmit = screen.getByTestId('btn-submit');
+    // fireEvent.click(buttonSubmit);
+    userEvent.click(buttonSubmit);
+
+    // si todo el formulario esta lleno no esperamos que la alerta este en el documento
+    // cuanda sabemos que un elemento siempre va a existir en el documento usamos el inicio del metodo "get"
+    // pero cuando es un elemento que esta condicionado y puede o no existir se usa el inicio del metodo con "query"
+    const alerta = screen.queryByTestId('alerta');
+    expect(alerta).not.toBeInTheDocument()
+
+    //AQUI COMPROBAMOS QUE LA FUNCION DE CREAR CITA HAYA SIDO LLAMDADA
+    expect(crearCita).toHaveBeenCalled(); // que haya sido llamada
+    expect(crearCita).toHaveBeenCalledTimes(1); // que haya sido llamada
+
+
+});
