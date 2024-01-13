@@ -1,5 +1,5 @@
 import React from 'react';
-import {fireEvent, getByTestId, render, screen} from '@testing-library/react'
+import {fireEvent, render, screen} from '@testing-library/react'
 import Formulario from '../components/Formulario'
 import '@testing-library/jest-dom/extend-expect'
 import userEvent from '@testing-library/user-event';
